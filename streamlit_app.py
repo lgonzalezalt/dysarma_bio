@@ -9,7 +9,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- CUSTOM CSS STYLES (Matching presentation branding) ---
+# --- CUSTOM CSS STYLES ---
 st.markdown("""
     <style>
     .stApp {
@@ -28,11 +28,7 @@ st.markdown("""
         color: #20472f !important;
     }
     [data-testid="stMetricValue"] {
-        color: #ef3e93 !important;
         font-weight: bold;
-    }
-    [data-testid="stMetricLabel"] {
-        color: #20472f !important;
     }
     div.stAlert {
         background-color: #ffffff;
@@ -45,8 +41,8 @@ st.markdown("""
 # --- APP CONTENT ---
 st.title("🧬 Disarma Bio: Intestinal Release Simulator")
 st.markdown("""
-*Interactive model based on kinetic bioencapsulation data in microalgal biomass (Spirulina / Arthrospira platensis). 
-Real-time visualization of gastric protection and pH-dependent release in the piglet digestive tract.*
+*Interactive model of bioencapsulated VHH delivery using microalgal biomass (*Spirulina* / *Arthrospira platensis*). 
+Visualizing gastric protection and pH-triggered intestinal release.*
 """)
 
 # --- SIMULATION CONTROLS (SIDEBAR) ---
@@ -56,52 +52,67 @@ region = st.sidebar.selectbox(
     ["Stomach (Neonatal / Buffer)", "Stomach (Acid / Fasting)", "Duodenum / Jejunum (Small Intestine)", "Ileum / Colon"]
 )
 
-# Physiological values based on literature (Lumen Bioscience / Phase 0 data)
+# Assign parameters based on selected region
 if region == "Stomach (Neonatal / Buffer)":
     ph_val = 5.5
-    desc = "Colostrum buffer effect. Moderate pH (~5-6) protects the structural integrity of the biocapsule and prevents early proteolytic degradation."
+    desc = "Colostrum buffer effect. Moderate pH (~5-6) protects structural integrity."
+    status_icon = "🟢"
+    status_title = "STABLE CHASSIS (Buffer Phase)"
+    status_color = "#20472f" # Green/Dark
 elif region == "Stomach (Acid / Fasting)":
     ph_val = 2.5
-    desc = "Highly acidic environment (pH ~3). The cyanobacterial cell wall shields the core VHH against pepsin and acidic degradation."
+    desc = "Highly acidic environment (pH ~3). The cell wall shields VHH against pepsin."
+    status_icon = "🛡️"
+    status_title = "FULL GASTRIC PROTECTION (Intact Alga)"
+    status_color = "#20472f"
 elif region == "Duodenum / Jejunum (Small Intestine)":
     ph_val = 6.8
-    desc = "Key release site. Rise in pH and enzymatic activity degrade the cell wall/L-II layer, releasing active VHH for ETEC F4/F18 fimbriae neutralization."
+    desc = "Key release site. Rise in pH and enzymes degrade the cell wall, releasing active VHH."
+    status_icon = "💥"
+    status_title = "ACTIVE RELEASE & TARGETING (Wall Rupture)"
+    status_color = "#ef3e93" # Pink
 else:
     ph_val = 7.4
     desc = "Complete release of active VHH in the lumen for competitive pathogen blocking."
+    status_icon = "🎯"
+    status_title = "COMPLETE UNLOAD (Pathogen Neutralization)"
+    status_color = "#ef3e93"
 
 # Interactive slider for fine-tuning pH
 ph_slider = st.sidebar.slider("Manual pH adjustment:", min_value=1.0, max_value=9.0, value=float(ph_val), step=0.1)
 
-# Kinetic calculation of theoretical release (sigmoid profile validated in vitro)
+# Kinetic calculation of theoretical release
 release_calculated = min(100.0, max(0.0, 100 / (1 + np.exp(-1.8 * (ph_slider - 5.5)))))
 
-# --- REAL-TIME METRICS ---
-col1, col2 = st.columns(2)
+# --- DYNAMIC VISUAL STATUS (The Algae Transformation) ---
+st.markdown("---")
+col1, col2 = st.columns([1, 1.2])
 
 with col1:
     st.metric(label="Environment pH", value=f"{ph_slider:.1f}")
     st.metric(label="Released VHH Protein", value=f"{release_calculated:.1f} %")
 
 with col2:
-    st.subheader("Biocapsule Status")
+    st.markdown("### 🦠 Biocapsule State")
     if ph_slider < 4.0:
-        st.error("🛡️ **Gastric Protection:** Minimal release ($\le 10\%$). The algal chassis shields the active protein from pepsin and acidity.")
+        st.info("🛡️ **Intact Alga:** Cell wall completely sealed. Core proteins are safely isolated from gastric juices.")
     elif 4.0 <= ph_slider < 6.0:
-        st.warning("🔄 **Enteric Transition:** Controlled permeabilization of the cell wall in progress.")
+        st.warning("🔄 **Transition Phase:** Mild structural swelling. Microalga preparing for enzymatic breakdown.")
     else:
-        st.success("🎯 **Intestinal Release:** Biomass degradation and exposure of VHH for ETEC fimbriae neutralization.")
+        st.success("💥 **Ruptured Alga & Release:** Cell wall degraded. Active VHH deployed to block ETEC fimbriae!")
 
-st.markdown(f"*{desc}*")
+st.markdown(f"**Anatomical context:** *{desc}*")
 
 # --- RELEASE PROFILE CHART ---
 st.markdown("---")
 st.subheader("📈 Release Kinetics vs. pH Gradient")
 
+# Generate curve data and color split
 df_curve = pd.DataFrame({
     'pH': np.linspace(1, 9, 100),
     'Release_%': [min(100.0, max(0.0, 100 / (1 + np.exp(-1.8 * (p - 5.5))))) for p in np.linspace(1, 9, 100)]
 })
 
+# Display line chart with branding
 st.line_chart(df_curve, x='pH', y='Release_%')
-st.caption("Curve calibrated with experimental parameters of gastric resistance and microalgal biomass solubilization (Lumen Bioscience / Jester et al., 2022).")
+st.caption("Model calibrated with microalgal biomass solubilization parameters (Jester et al., 2022).")
