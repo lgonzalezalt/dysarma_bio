@@ -48,7 +48,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- APP HEADER ---
-st.title("Disarma Bio: Post-Weaning Intestinal Simulator")
+st.title("Dysarma Bio: Post-Weaning Intestinal Simulator")
 st.markdown(
     "Move the pH slider below to see in real time how the microalga protects and releases the active ingredient along the post-weaning piglet digestive tract."
 )
