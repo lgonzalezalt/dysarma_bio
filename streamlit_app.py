@@ -69,15 +69,19 @@ release_pct = min(100.0, max(0.0, 100 / (1 + np.exp(-1.8 * (ph_val - 5.5)))))
 if ph_val < 4.0:
     estado_texto = "Stomach (Gastric Phase): Intact and sealed microalga. Zero premature leakage of the active ingredient."
     color_badge = "#20472f"
+    posicion_actual = 1
 elif 4.0 <= ph_val < 6.0:
     estado_texto = "Neonatal Buffer Window: Stable microalgal structure protected by colostrum."
     color_badge = "#20472f"
+    posicion_actual = 1
 elif 6.0 <= ph_val < 7.2:
     estado_texto = "Duodenum / Jejunum (Target Zone!): Wall rupture and active deployment of the active ingredient."
     color_badge = "#ef3e93"
+    posicion_actual = 2
 else:
     estado_texto = "Ileum / Colon: Complete biomass breakdown for local active ingredient release."
     color_badge = "#ef3e93"
+    posicion_actual = 3
 
 # --- MÉTRICAS ---
 col1, col2 = st.columns(2)
@@ -96,35 +100,42 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- ANATOMICAL MAP CARDS ---
-st.subheader("Live Biocapsule Journey")
+# --- ANATOMICAL MAP CARDS (CON EFECTO VISUAL DE TRAYECTORIA EN TIEMPO REAL) ---
+st.subheader("Live Biocapsule Journey & Tract Position")
 
-estilo_estomago = "border: 3px solid #ef3e93; background-color: #fce4ec;" if ph_val < 4.0 else "border: 1px solid #20472f; background-color: #ffffff;"
-estilo_duodeno = "border: 3px solid #ef3e93; background-color: #fce4ec;" if (4.0 <= ph_val < 7.2) else "border: 1px solid #20472f; background-color: #ffffff;"
-estilo_colon = "border: 3px solid #ef3e93; background-color: #fce4ec;" if ph_val >= 7.2 else "border: 1px solid #20472f; background-color: #ffffff;"
+# Destacamos visualmente la tarjeta en la que se encuentra la cápsula según el pH actual
+estilo_estomago = "border: 3px solid #ef3e93; background-color: #fce4ec; transform: scale(1.02);" if posicion_actual == 1 else "border: 1px solid #20472f; background-color: #ffffff; opacity: 0.7;"
+estilo_duodeno = "border: 3px solid #ef3e93; background-color: #fce4ec; transform: scale(1.02);" if posicion_actual == 2 else "border: 1px solid #20472f; background-color: #ffffff; opacity: 0.7;"
+estilo_colon = "border: 3px solid #ef3e93; background-color: #fce4ec; transform: scale(1.02);" if posicion_actual == 3 else "border: 1px solid #20472f; background-color: #ffffff; opacity: 0.7;"
 
 col_a, col_b, col_c = st.columns(3)
 
 with col_a:
+    badge_st = "📍 [CAPSULE HERE]" if posicion_actual == 1 else ""
     st.markdown(f"""
-    <div style="{estilo_estomago} padding: 15px; border-radius: 10px; text-align: center; height: 160px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <div style="{estilo_estomago} padding: 15px; border-radius: 10px; text-align: center; height: 180px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); transition: all 0.3s ease;">
         <h4 style="margin-bottom: 5px; font-size: 16px; font-style: normal;">1. Stomach</h4>
+        <p style="font-size: 11px; margin: 0 0 8px 0; color: #ef3e93; font-weight: 700;">{badge_st}</p>
         <p style="font-size: 12px; margin: 0; font-style: normal;"><b>pH 1.0 - 4.0</b><br>Protective microalga shield against gastric acids.</p>
     </div>
     """, unsafe_allow_html=True)
 
 with col_b:
+    badge_du = "📍 [CAPSULE HERE]" if posicion_actual == 2 else ""
     st.markdown(f"""
-    <div style="{estilo_duodeno} padding: 15px; border-radius: 10px; text-align: center; height: 160px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <div style="{estilo_duodeno} padding: 15px; border-radius: 10px; text-align: center; height: 180px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); transition: all 0.3s ease;">
         <h4 style="margin-bottom: 5px; font-size: 16px; font-style: normal;">2. Duodenum / Jejunum</h4>
+        <p style="font-size: 11px; margin: 0 0 8px 0; color: #ef3e93; font-weight: 700;">{badge_du}</p>
         <p style="font-size: 12px; margin: 0; font-style: normal;"><b>pH 6.0 - 7.0</b><br><b>Active Release</b> of the ingredient against target pathogens.</p>
     </div>
     """, unsafe_allow_html=True)
 
 with col_c:
+    badge_co = "📍 [CAPSULE HERE]" if posicion_actual == 3 else ""
     st.markdown(f"""
-    <div style="{estilo_colon} padding: 15px; border-radius: 10px; text-align: center; height: 160px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <div style="{estilo_colon} padding: 15px; border-radius: 10px; text-align: center; height: 180px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); transition: all 0.3s ease;">
         <h4 style="margin-bottom: 5px; font-size: 16px; font-style: normal;">3. Ileum / Colon</h4>
+        <p style="font-size: 11px; margin: 0 0 8px 0; color: #ef3e93; font-weight: 700;">{badge_co}</p>
         <p style="font-size: 12px; margin: 0; font-style: normal;"><b>pH 7.2 - 8.0</b><br>Complete unload and local mucosal action.</p>
     </div>
     """, unsafe_allow_html=True)
