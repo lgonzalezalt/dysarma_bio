@@ -95,7 +95,6 @@ st.markdown("<br>", unsafe_allow_html=True)
 # --- DIAGRAMA VISUAL DEL TRACTO DIGESTIVO ---
 st.subheader("Digestive Tract Visual Map")
 
-# Definimos clases visuales dinámicas según la posición actual de la cápsula
 estilo_estomago = "border: 3px solid #ef3e93; background-color: #fce4ec; box-shadow: 0 6px 12px rgba(239,62,147,0.2);" if posicion_actual == 1 else "border: 1px solid #20472f; background-color: #ffffff; opacity: 0.7;"
 estilo_duodeno = "border: 3px solid #ef3e93; background-color: #fce4ec; box-shadow: 0 6px 12px rgba(239,62,147,0.2);" if posicion_actual == 2 else "border: 1px solid #20472f; background-color: #ffffff; opacity: 0.7;"
 estilo_colon = "border: 3px solid #ef3e93; background-color: #fce4ec; box-shadow: 0 6px 12px rgba(239,62,147,0.2);" if posicion_actual == 3 else "border: 1px solid #20472f; background-color: #ffffff; opacity: 0.7;"
@@ -104,43 +103,34 @@ badge_st = "📍 [CAPSULE IN STOMACH / TRANSITION]" if posicion_actual == 1 else
 badge_du = "📍 [TARGET ZONE: ACTIVE RELEASE]" if posicion_actual == 2 else "2. Duodenum / Jejunum"
 badge_co = "📍 [COMPLETE UNLOAD]" if posicion_actual == 3 else "3. Ileum / Colon"
 
-# Renderizamos un diagrama esquemático visual limpio en formato HTML/CSS interactivo
-st.markdown(f"""
-<div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
-    <!-- ETAPA 1 -->
-    <div style="{estilo_estomago} padding: 16px; border-radius: 12px; transition: all 0.3s ease;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <h4 style="margin: 0; font-size: 16px;">{badge_st}</h4>
-            <span style="font-size: 12px; font-weight: 700; color: #20472f;">pH 1.0 - 6.0</span>
-        </div>
-        <p style="margin: 0; font-size: 13px;">Protective vehicle shield during the post-weaning solid feed adaptation phase. Zero premature leakage.</p>
-    </div>
-    
-    <!-- FLECHA DE CONexIÓN VISUAL -->
-    <div style="text-align: center; color: #ef3e93; font-weight: bold; font-size: 18px; margin: -4px 0;">↓</div>
-
-    <!-- ETAPA 2 -->
-    <div style="{estilo_duodeno} padding: 16px; border-radius: 12px; transition: all 0.3s ease;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <h4 style="margin: 0; font-size: 16px;">{badge_du}</h4>
-            <span style="font-size: 12px; font-weight: 700; color: #ef3e93;">pH 6.0 - 7.0</span>
-        </div>
-        <p style="margin: 0; font-size: 13px;"><b>Active Release:</b> Biomass breakdown and deployment of the active ingredient where post-weaning challenges occur.</p>
-    </div>
-
-    <!-- FLECHA DE CONEXIÓN VISUAL -->
-    <div style="text-align: center; color: #ef3e93; font-weight: bold; font-size: 18px; margin: -4px 0;">↓</div>
-
-    <!-- ETAPA 3 -->
-    <div style="{estilo_colon} padding: 16px; border-radius: 12px; transition: all 0.3s ease;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <h4 style="margin: 0; font-size: 16px;">{badge_co}</h4>
-            <span style="font-size: 12px; font-weight: 700; color: #20472f;">pH 7.2 - 8.0</span>
-        </div>
-        <p style="margin: 0; font-size: 13px;">Complete unload of remaining biomass and local mucosal action in the lower intestinal tract.</p>
-    </div>
+# HTML sin indentación para evitar que Streamlit lo interprete como bloque de código
+html_diagram = f"""<div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
+<div style="{estilo_estomago} padding: 16px; border-radius: 12px; transition: all 0.3s ease;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+<h4 style="margin: 0; font-size: 16px;">{badge_st}</h4>
+<span style="font-size: 12px; font-weight: 700; color: #20472f;">pH 1.0 - 6.0</span>
 </div>
-""", unsafe_allow_html=True)
+<p style="margin: 0; font-size: 13px;">Protective vehicle shield during the post-weaning solid feed adaptation phase. Zero premature leakage.</p>
+</div>
+<div style="text-align: center; color: #ef3e93; font-weight: bold; font-size: 18px; margin: -4px 0;">↓</div>
+<div style="{estilo_duodeno} padding: 16px; border-radius: 12px; transition: all 0.3s ease;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+<h4 style="margin: 0; font-size: 16px;">{badge_du}</h4>
+<span style="font-size: 12px; font-weight: 700; color: #ef3e93;">pH 6.0 - 7.0</span>
+</div>
+<p style="margin: 0; font-size: 13px;"><b>Active Release:</b> Biomass breakdown and deployment of the active ingredient where post-weaning challenges occur.</p>
+</div>
+<div style="text-align: center; color: #ef3e93; font-weight: bold; font-size: 18px; margin: -4px 0;">↓</div>
+<div style="{estilo_colon} padding: 16px; border-radius: 12px; transition: all 0.3s ease;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+<h4 style="margin: 0; font-size: 16px;">{badge_co}</h4>
+<span style="font-size: 12px; font-weight: 700; color: #20472f;">pH 7.2 - 8.0</span>
+</div>
+<p style="margin: 0; font-size: 13px;">Complete unload of remaining biomass and local mucosal action in the lower intestinal tract.</p>
+</div>
+</div>"""
+
+st.markdown(html_diagram, unsafe_allow_html=True)
 
 # --- DYNAMIC STATUS BLOCK ---
 st.markdown(f"""
